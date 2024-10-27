@@ -28,12 +28,25 @@ install_dependencies() {
     if [ ! -f "${SCRIPT_DIR}/.env" ]; then
         if [ -f "${SCRIPT_DIR}/.env.example" ]; then
             cp "${SCRIPT_DIR}/.env.example" "${SCRIPT_DIR}/.env"
-            echo "Created .env file from .env.example. Please edit .env and add your Groq API key"
+            chmod 600 "${SCRIPT_DIR}/.env"
+            echo "----------------------------------------"
+            echo "Created .env file from .env.example"
+            echo "You will need a Groq API key to use this tool."
+            echo "1. Get your API key from: https://console.groq.com/"
+            echo "2. Edit ${SCRIPT_DIR}/.env"
+            echo "3. Replace 'your_api_key_here' with your actual Groq API key"
+            echo "----------------------------------------"
         else
             echo "GROQ_API_KEY=your_api_key_here" > "${SCRIPT_DIR}/.env"
-            echo "Created .env file. Please edit it and add your Groq API key"
+            chmod 600 "${SCRIPT_DIR}/.env"
+            echo "----------------------------------------"
+            echo "Created new .env file"
+            echo "You will need a Groq API key to use this tool."
+            echo "1. Get your API key from: https://console.groq.com/"
+            echo "2. Edit ${SCRIPT_DIR}/.env"
+            echo "3. Replace 'your_api_key_here' with your actual Groq API key"
+            echo "----------------------------------------"
         fi
-        chmod 600 "${SCRIPT_DIR}/.env"
     else
         echo "Existing .env file found and preserved"
     fi
