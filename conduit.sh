@@ -24,21 +24,22 @@ install_dependencies() {
         echo 'export PATH="$PATH:$HOME/.local/bin/speech-tools"' >> ~/.bashrc
     fi
     
-    # Handle API key setup
-    if [ ! -f ~/.config/groq/api_key ]; then
-        echo "Setting up Groq API key configuration..."
-        mkdir -p ~/.config/groq
-        touch ~/.config/groq/api_key
-        chmod 600 ~/.config/groq/api_key
-        echo "GROQ_API_KEY=your_api_key_here" > ~/.config/groq/api_key
-        echo "Please edit ~/.config/groq/api_key and add your Groq API key"
-    elif [ ! -s ~/.config/groq/api_key ]; then
-        # File exists but is empty
-        echo "GROQ_API_KEY=your_api_key_here" > ~/.config/groq/api_key
-        echo "Please edit ~/.config/groq/api_key and add your Groq API key"
+    # Handle .env file setup
+    if [ ! -f "${SCRIPT_DIR}/.env" ]; then
+        if [ -f "${SCRIPT_DIR}/.env.example" ]; then
+            cp "${SCRIPT_DIR}/.env.example" "${SCRIPT_DIR}/.env"
+            echo "Created .env file from .env.example. Please edit .env and add your Groq API key"
+        else
+            echo "GROQ_API_KEY=your_api_key_here" > "${SCRIPT_DIR}/.env"
+            echo "Created .env file. Please edit it and add your Groq API key"
+        fi
+        chmod 600 "${SCRIPT_DIR}/.env"
     else
-        echo "Existing Groq API key configuration found and preserved"
+        echo "Existing .env file found and preserved"
     fi
+    
+    # Create symlink to .env file in speech-tools directory
+    ln -sf "${SCRIPT_DIR}/.env" ~/.local/bin/speech-tools/.env
 }
 
 # Setup keyboard shortcuts

@@ -9,8 +9,13 @@ WINDOW_PROPS=$(xprop -id $ORIGINAL_WINDOW_ID 2>/dev/null)
 # More specific check for text input windows
 ORIGINAL_HAD_FOCUS=$(echo "$WINDOW_PROPS" | grep 'WM_CLASS' | grep -i 'cursor' && echo "yes" || echo "no")
 
-# Source the API key
-source ~/.config/groq/api_key
+# Source the API key from .env file
+if [ -f "$(dirname "$0")/.env" ]; then
+    source "$(dirname "$0")/.env"
+else
+    notify-send "Error" ".env file not found"
+    exit 1
+fi
 
 # Record audio and transcribe
 record_and_transcribe() {
@@ -20,7 +25,7 @@ record_and_transcribe() {
     
     # Check if API key exists
     if [ -z "$GROQ_API_KEY" ]; then
-        notify-send "Error" "Groq API key not found. Please check ~/.config/groq/api_key"
+        notify-send "Error" "Groq API key not found. Please check your .env file"
         return 1
     fi
     
