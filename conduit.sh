@@ -69,36 +69,49 @@ setup_shortcuts() {
     echo "----------------------------------------"
     read -p "Enter your choice (1-4): " choice
     
+    # Detect desktop environment
+    if [ "$XDG_CURRENT_DESKTOP" = "GNOME" ]; then
+        DE="gnome"
+    elif [ "$XDG_CURRENT_DESKTOP" = "X-Cinnamon" ] || [ "$XDG_CURRENT_DESKTOP" = "CINNAMON" ]; then
+        DE="cinnamon"
+    else
+        DE="unknown"
+    fi
+    
     case $choice in
         1)
-            # Check if gsettings is available
             if ! command -v gsettings &> /dev/null; then
                 echo "gsettings not found. Please set up shortcuts manually through System Settings."
                 return 1
             fi
             
-            # First, ensure the custom keybindings list includes our shortcut
-            local CURRENT_LIST=$(gsettings get org.cinnamon.desktop.keybindings custom-list)
-            
-            # If the list is empty, initialize it with just our binding
-            if [ "$CURRENT_LIST" = "@as []" ]; then
-                gsettings set org.cinnamon.desktop.keybindings custom-list "['speech']"
-            else
-                # Remove brackets and quotes from current list
-                CURRENT_LIST=${CURRENT_LIST//[\[\]\'\"]/}
-                
-                # Add our custom keybinding if not present
-                if [[ ! $CURRENT_LIST =~ "speech" ]]; then
-                    # Properly format the new list
-                    NEW_LIST="[$(echo "'$CURRENT_LIST'" | sed "s/,/, /g")${CURRENT_LIST:+, }'speech']"
-                    gsettings set org.cinnamon.desktop.keybindings custom-list "$NEW_LIST"
+            if [ "$DE" = "gnome" ]; then
+                # GNOME shortcut setup
+                gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/speech/']"
+                gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/speech/ name "Speech Transcription"
+                gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/speech/ command "$HOME/.local/bin/speech-tools/transcribe.sh"
+                gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/speech/ binding "<Shift><Super>t"
+            elif [ "$DE" = "cinnamon" ]; then
+                # Cinnamon shortcut setup (existing code)
+                local CURRENT_LIST=$(gsettings get org.cinnamon.desktop.keybindings custom-list)
+                if [ "$CURRENT_LIST" = "@as []" ]; then
+                    gsettings set org.cinnamon.desktop.keybindings custom-list "['speech']"
+                else
+                    CURRENT_LIST=${CURRENT_LIST//[\[\]\'\"]/}
+                    if [[ ! $CURRENT_LIST =~ "speech" ]]; then
+                        NEW_LIST="[$(echo "'$CURRENT_LIST'" | sed "s/,/, /g")${CURRENT_LIST:+, }'speech']"
+                        gsettings set org.cinnamon.desktop.keybindings custom-list "$NEW_LIST"
+                    fi
                 fi
+                
+                gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/speech/ binding "['<Shift><Super>t']"
+                gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/speech/ command "$HOME/.local/bin/speech-tools/transcribe.sh"
+                gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/speech/ name "Speech Transcription"
+            else
+                echo "Your desktop environment is not directly supported for automatic shortcut setup."
+                echo "Please use option 3 to set up shortcuts manually."
+                return 1
             fi
-            
-            # Set up the speech transcription shortcut
-            gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/speech/ binding "['<Shift><Super>t']"
-            gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/speech/ command "$HOME/.local/bin/speech-tools/transcribe.sh"
-            gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/speech/ name "Speech Transcription"
             
             echo "Default shortcut (Shift+Super+T) has been set up."
             echo "You may need to log out and back in for changes to take effect."
@@ -113,10 +126,10 @@ setup_shortcuts() {
             echo "4. Choose your preferred gesture (e.g., four finger swipe up)"
             echo "----------------------------------------"
             
-            if command -v cinnamon-settings &> /dev/null; then
-                cinnamon-settings gestures
-            elif command -v gnome-control-center &> /dev/null; then
+            if [ "$DE" = "gnome" ]; then
                 gnome-control-center gestures
+            elif [ "$DE" = "cinnamon" ]; then
+                cinnamon-settings gestures
             else
                 echo "Could not detect your desktop environment's settings command."
                 echo "Please open System Settings > Gestures manually."
@@ -137,10 +150,10 @@ setup_shortcuts() {
             
             read -p "Would you like to open System Settings now? (y/n): " open_settings
             if [[ $open_settings =~ ^[Yy]$ ]]; then
-                if command -v cinnamon-settings &> /dev/null; then
-                    cinnamon-settings keyboard
-                elif command -v gnome-control-center &> /dev/null; then
+                if [ "$DE" = "gnome" ]; then
                     gnome-control-center keyboard
+                elif [ "$DE" = "cinnamon" ]; then
+                    cinnamon-settings keyboard
                 else
                     echo "Could not detect your desktop environment's settings command."
                     echo "Please open System Settings manually."
