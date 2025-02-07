@@ -1,5 +1,7 @@
 # Conduit - Speech-to-Text Transcription Tool
 
+Hey, this is my first public project. This was made for me to use on my Linux Mint machines, should in theory work with Ubuntu, but I make no promises. You just need a Groq API key and you should be good to go.
+
 ## Installation Instructions
 
 1. Clone the repository or download the `conduit.sh` and `transcribe.sh` files.
