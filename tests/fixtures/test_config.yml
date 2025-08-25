@@ -1,0 +1,34 @@
+# Test Configuration for Conduit Tests
+# This file contains test-specific settings
+
+# Test API Configuration
+test_api:
+  mock_server_port: 8080
+  mock_api_key: "gsk_test_1234567890abcdefghijklmnopqrstuvwxyz1234567890ab"
+  timeout: 5
+
+# Test Audio Settings
+test_audio:
+  sample_file: "test_audio.wav"
+  duration: 1
+  sample_rate: 16000
+
+# Test Paths
+test_paths:
+  temp_dir: "/tmp/conduit_test"
+  mock_responses: "mocks/"
+  fixtures: "fixtures/"
+
+# Test Scenarios
+scenarios:
+  - name: "successful_transcription"
+    audio_file: "fixtures/test_audio.wav"
+    expected_response: "mocks/api_response_success.json"
+    
+  - name: "api_error"
+    audio_file: "fixtures/test_audio.wav"
+    expected_response: "mocks/api_response_error.json"
+    
+  - name: "rate_limit"
+    audio_file: "fixtures/test_audio.wav"
+    expected_response: "mocks/api_response_rate_limit.json"

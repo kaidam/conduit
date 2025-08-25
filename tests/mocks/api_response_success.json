@@ -1,0 +1,14 @@
+{
+  "text": "This is a test transcription from the mock API response.",
+  "x_groq": {
+    "id": "req_test_123456789",
+    "usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 10,
+      "total_tokens": 10,
+      "prompt_time": 0.001,
+      "completion_time": 0.05,
+      "total_time": 0.051
+    }
+  }
+}

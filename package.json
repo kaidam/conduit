@@ -1,0 +1,41 @@
+{
+  "name": "conduit",
+  "version": "1.0.0",
+  "description": "Cross-platform speech-to-text transcription tool using Groq API",
+  "keywords": [
+    "speech-to-text",
+    "transcription",
+    "groq",
+    "whisper",
+    "audio",
+    "cli",
+    "cross-platform"
+  ],
+  "homepage": "https://github.com/yourusername/conduit",
+  "bugs": {
+    "url": "https://github.com/yourusername/conduit/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/conduit.git"
+  },
+  "license": "MIT",
+  "author": "Your Name",
+  "scripts": {
+    "install": "./install-cross-platform.sh",
+    "test": "./tests/run-tests.sh",
+    "lint": "shellcheck *.sh tests/*.sh",
+    "format": "shfmt -w -i 4 *.sh"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "os": [
+    "darwin",
+    "linux"
+  ],
+  "devDependencies": {
+    "shellcheck": "^0.9.0",
+    "shfmt": "^3.7.0"
+  }
+}

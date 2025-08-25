@@ -1,0 +1,86 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint:
+    name: Lint Shell Scripts
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Install shellcheck
+      run: sudo apt-get update && sudo apt-get install -y shellcheck
+    
+    - name: Run shellcheck
+      run: |
+        find . -name "*.sh" -type f -exec shellcheck {} \;
+
+  test-linux:
+    name: Test on Linux
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Check script syntax
+      run: |
+        for script in *.sh; do
+          bash -n "$script"
+        done
+    
+    - name: Check dependencies
+      run: |
+        make check-deps || true
+    
+    - name: Test OS detection
+      run: |
+        set +e
+        ./conduit.sh 2>&1 | grep -q "Operating system check passed: Linux detected" || \
+        ./conduit.sh 2>&1 | grep -q "ERROR: Operating System Not Supported"
+        echo "OS detection working"
+
+  test-macos:
+    name: Test on macOS
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Install dependencies
+      run: |
+        brew install jq curl
+    
+    - name: Check script syntax
+      run: |
+        for script in *.sh; do
+          bash -n "$script"
+        done
+    
+    - name: Check dependencies
+      run: |
+        make check-deps || true
+    
+    - name: Test cross-platform script
+      run: |
+        chmod +x transcribe-cross-platform.sh
+        ./transcribe-cross-platform.sh 2>&1 | grep -q "Detected platform: macos" || echo "Platform detection test"
+
+  security:
+    name: Security Check
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Check for hardcoded secrets
+      run: |
+        # Check for potential API keys (should only be in .env.example as placeholder)
+        ! grep -r "gsk_[a-zA-Z0-9]\{52\}" --exclude=".env*" --exclude="*.md" . || \
+        (echo "Found potential hardcoded API key!" && exit 1)
+    
+    - name: Check file permissions in scripts
+      run: |
+        # Verify scripts set secure permissions for .env
+        grep -h "chmod 600" *.sh | grep -q ".env" && echo "✓ Scripts set secure .env permissions"

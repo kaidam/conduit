@@ -1,0 +1,48 @@
+# Conduit Configuration File
+# This file contains default settings for the Conduit transcription tool
+
+# API Configuration
+api:
+  provider: groq
+  model: whisper-large-v3
+  language: en
+  response_format: json
+  timeout: 30
+
+# Audio Settings
+audio:
+  sample_rate: 16000
+  max_recording_duration: 120  # seconds
+  format: wav
+
+# Platform-specific settings
+platforms:
+  linux:
+    clipboard_tool: xclip  # or xsel
+    notification_tool: notify-send
+    paste_tool: xdotool
+    recorder: sox
+  
+  macos:
+    clipboard_tool: pbcopy
+    notification_tool: osascript
+    paste_tool: osascript
+    recorder: sox  # or quicktime
+
+# User Preferences
+preferences:
+  auto_paste: true
+  show_notifications: true
+  copy_to_clipboard: true
+  show_terminal_output: true
+
+# Keyboard Shortcuts (for reference)
+shortcuts:
+  linux: "Shift+Super+T"
+  macos: "Custom Service Shortcut"
+
+# Development
+development:
+  debug: false
+  verbose: false
+  log_file: /tmp/conduit.log

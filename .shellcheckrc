@@ -1,0 +1,17 @@
+# ShellCheck configuration file
+# https://www.shellcheck.net/wiki/Ignore
+
+# Allow reading from /dev/null
+disable=SC2162
+
+# We know when we want word splitting
+disable=SC2086
+
+# Allow [ p ] && [ q ] instead of [ p ] && [ q ]
+disable=SC2015
+
+# We use bash-specific features
+shell=bash
+
+# Set minimum severity to warning
+# severity=warning

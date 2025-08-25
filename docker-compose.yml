@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  conduit:
+    build: .
+    container_name: conduit-transcription
+    environment:
+      - GROQ_API_KEY=${GROQ_API_KEY:-your_api_key_here}
+      - PULSE_SERVER=unix:${XDG_RUNTIME_DIR}/pulse/native
+    volumes:
+      - ${XDG_RUNTIME_DIR}/pulse/native:${XDG_RUNTIME_DIR}/pulse/native
+      - ~/.config/pulse/cookie:/home/conduit/.config/pulse/cookie
+      - ./output:/app/output
+    devices:
+      - /dev/snd
+    stdin_open: true
+    tty: true
+    command: /bin/bash
+
+# Usage:
+# docker-compose build
+# docker-compose run --rm conduit ./transcribe-cross-platform.sh
