@@ -16,7 +16,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Version files
 CURRENT_VERSION_FILE="$SCRIPT_DIR/VERSION"
-REMOTE_VERSION_URL="https://raw.githubusercontent.com/yourusername/conduit/main/VERSION"
+REMOTE_VERSION_URL="https://raw.githubusercontent.com/kaidam/conduit/main/VERSION"
 
 echo "================================================"
 echo "     Conduit Update Checker"
@@ -112,9 +112,9 @@ else
     trap "rm -rf $TEMP_DIR" EXIT
     
     if command -v curl &> /dev/null; then
-        curl -L "https://github.com/yourusername/conduit/archive/main.tar.gz" -o "$TEMP_DIR/conduit.tar.gz"
+        curl -L "https://github.com/kaidam/conduit/archive/main.tar.gz" -o "$TEMP_DIR/conduit.tar.gz"
     else
-        wget "https://github.com/yourusername/conduit/archive/main.tar.gz" -O "$TEMP_DIR/conduit.tar.gz"
+        wget "https://github.com/kaidam/conduit/archive/main.tar.gz" -O "$TEMP_DIR/conduit.tar.gz"
     fi
     
     # Extract and update

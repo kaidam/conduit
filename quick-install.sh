@@ -6,7 +6,7 @@
 set -euo pipefail
 
 # Configuration
-REPO_URL="https://github.com/yourusername/conduit"
+REPO_URL="https://github.com/kaidam/conduit"
 INSTALL_DIR="${HOME}/.conduit"
 BIN_DIR="${HOME}/.local/bin"
 
