@@ -23,7 +23,7 @@ A cross-platform speech-to-text transcription tool that uses the Groq API with W
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/conduit.git
+git clone https://github.com/kaidam/conduit.git
 cd conduit
 
 # Run the cross-platform installer
